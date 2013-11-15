@@ -51,6 +51,13 @@
 
 @synthesize menuIsOpen;
 
+static BOOL _forceIntegrated = NO;
+
++ (BOOL)forceIntegrated
+{
+    return _forceIntegrated;
+}
+
 #pragma mark - Initializers
 
 - (id)init
@@ -195,32 +202,24 @@
     BOOL retval = NO;
 
     if (sender == integratedOnly) {
-        NSArray *taskList = [GSProcess getTaskList];
-        if (taskList.count > 0) {
-            GTMLoggerInfo(@"Not setting Integrated Only because of dependencies list items: %@", taskList);
-
-            NSMutableArray *taskNames = [[NSMutableArray alloc] init];
-            for (NSDictionary *dict in taskList) {
-                NSString *taskName = [dict objectForKey:kTaskItemName];
-                [taskNames addObject:taskName];
-            }
-
-            [GSNotifier showCantSwitchToIntegratedOnlyMessage:taskNames];
-            return;
-        }
-
         GTMLoggerInfo(@"Setting Integrated Only...");
         retval = [GSMux setMode:GSSwitcherModeForceIntegrated];
+        
+        _forceIntegrated = YES;
     }
 
     if (sender == discreteOnly) { 
         GTMLoggerInfo(@"Setting Discrete Only...");
         retval = [GSMux setMode:GSSwitcherModeForceDiscrete];
+        
+        _forceIntegrated = NO;
     }
 
     if (sender == dynamicSwitching) {
         GTMLoggerInfo(@"Setting Dynamic Switching...");
         retval = [GSMux setMode:GSSwitcherModeDynamicSwitching];
+
+        _forceIntegrated = NO;
     }
 
     // Only change status in case of GPU switch success.

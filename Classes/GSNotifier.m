@@ -49,6 +49,13 @@ static NSString *_lastMessage = nil;
 
 + (void)showGPUChangeNotification:(GSGPUType)type
 {
+    if ([GSMenuController forceIntegrated]) {
+        if (type != GSGPUTypeIntegrated) {
+            [GSMux setMode:GSSwitcherModeForceIntegrated];
+            return;
+        }
+    }
+    
     // Get the localized notification name and message, as well as the current
     // GPU name for display in the message.
     NSString *key = [self _keyForNotificationType:type];
@@ -106,24 +113,6 @@ static NSString *_lastMessage = nil;
                                        otherButton:nil 
                          informativeTextWithFormat:@""];
     [alert runModal];
-}
-
-+ (void)showCantSwitchToIntegratedOnlyMessage:(NSArray *)taskList
-{
-    NSString *messageKey = [NSString stringWithFormat:@"Can'tSwitchToIntegratedOnly%@", (taskList.count > 1 ? @"Plural" : @"Singular")];
-
-    NSMutableString *descriptionText = [[NSMutableString alloc] init];
-    for (NSString *taskName in taskList)
-        [descriptionText appendFormat:@"%@\n", taskName];
-
-    NSAlert *alert = [NSAlert alertWithMessageText:Str(messageKey)
-                                     defaultButton:@"OK"
-                                   alternateButton:@"Why?"
-                                       otherButton:nil
-                         informativeTextWithFormat:@"%@", descriptionText];
-
-    if ([alert runModal] == NSAlertAlternateReturn)
-        [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:kIntegratedOnlyMessageExplanationURL]];
 }
 
 + (BOOL)notificationCenterIsAvailable

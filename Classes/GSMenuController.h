@@ -46,6 +46,8 @@
 
 @property BOOL menuIsOpen;
 
++ (BOOL)forceIntegrated;
+
 - (void)setupMenu;
 - (void)updateMenu;
 
