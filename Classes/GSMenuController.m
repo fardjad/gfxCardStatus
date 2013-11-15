@@ -51,7 +51,7 @@
 
 @synthesize menuIsOpen;
 
-static BOOL _forceIntegrated = NO;
+static BOOL _forceIntegrated = YES;
 
 + (BOOL)forceIntegrated
 {

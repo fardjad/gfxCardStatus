@@ -91,6 +91,8 @@
     // Check for updates if the user has them enabled.
     if ([_prefs shouldCheckForUpdatesOnStartup])
         [updater checkForUpdatesInBackground];
+    
+    [GSMux setMode:GSSwitcherModeForceIntegrated];
 }
 
 #pragma mark - Termination Notifications
